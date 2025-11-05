@@ -2,38 +2,23 @@ name: Run small script
 
 on:
   workflow_dispatch:
+  # schedule:
+  #   - cron: "0 13 * * *"  # daily at 13:00 UTC
 
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Show workspace
+      - name: Show workspace (once while debugging)
         run: |
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
           pwd
-          git status --porcelain
-          echo "--- repo root ---"
           ls -la
-          echo "--- scripts dir ---"
-          ls -la scripts || true
-          echo "--- full tree ---"
-          find . -maxdepth 3 -type f | sort
 
       - name: Run script
-        run: |
-          set -e
-          if [ -f scripts/my_job.py ]; then
-            python scripts/my_job.py
-          elif [ -f my_job.py ]; then
-            python my_job.py
-          else
-            echo "Could not find my_job.py in repo root or scripts/."
-            find . -maxdepth 3 -type f | sort
-            exit 1
-          fi
+        run: python my_job.py
