@@ -4,9 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-script:          # this is the job name (can be anything)
+  run-script:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -14,5 +13,27 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Show workspace
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          pwd
+          git status --porcelain
+          echo "--- repo root ---"
+          ls -la
+          echo "--- scripts dir ---"
+          ls -la scripts || true
+          echo "--- full tree ---"
+          find . -maxdepth 3 -type f | sort
+
       - name: Run script
-        run: python scripts/my_job.py
+        run: |
+          set -e
+          if [ -f scripts/my_job.py ]; then
+            python scripts/my_job.py
+          elif [ -f my_job.py ]; then
+            python my_job.py
+          else
+            echo "Could not find my_job.py in repo root or scripts/."
+            find . -maxdepth 3 -type f | sort
+            exit 1
+          fi
