@@ -2,8 +2,8 @@ name: Run small script (Ruby)
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "0 13 * * *"  # daily at 13:00 UTC
+  schedule:
+  - cron: "0 13 * * *"  # daily at 13:00 UTC
 
 jobs:
   run-script:
