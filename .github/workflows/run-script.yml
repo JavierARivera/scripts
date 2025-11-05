@@ -1,4 +1,4 @@
-name: Run small script
+name: Run small script (Ruby)
 
 on:
   workflow_dispatch:
@@ -8,17 +8,16 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    env:
+      MY_API_KEY: ${{ secrets.MY_API_KEY }}
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          python-version: "3.12"
+          ruby-version: "3.3"  # or 3.2, whatever you like
 
-      - name: Show workspace (once while debugging)
-        run: |
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          pwd
-          ls -la
-
-      - name: Run script
-        run: python my_job.py
+      - name: Run Ruby script
+        run: ruby my_job.rb
